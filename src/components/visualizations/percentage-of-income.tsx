@@ -1,7 +1,8 @@
 import * as React from 'react'
-import { PieChart, Pie, Tooltip } from 'recharts'
+import { PieChart, Pie, Tooltip, Legend, ResponsiveContainer } from 'recharts'
 import LoanData from '../../lib/loan-data'
 import getRandomColor from '../../lib/get-random-color'
+import formatNumber from '../../lib/format-number'
 
 interface IProps {
 	loanData: LoanData[]
@@ -42,10 +43,29 @@ export default class PercentageOfIncome extends React.Component<IProps> {
 
 	public render() {
 		return (
-			<PieChart width={800} height={400}>
-				<Pie data={this.data} dataKey="value" labelLine={false} />
-				<Tooltip />
-			</PieChart>
+			<ResponsiveContainer aspect={1.5}>
+				<PieChart>
+					<Pie data={this.data} dataKey="value" labelLine={false} />
+					<Tooltip
+						formatter={value => formatNumber(value as number)}
+					/>
+					<Legend
+						layout="vertical"
+						formatter={(label, obj) => {
+							/**
+							 * It seems as though the type definitions are not up-to-date
+							 * @TODO: submit PR to `@types/recharts` to fix
+							 */
+							const other = obj as any
+							/* tslint:disable */
+							console.log(other)
+							if (!other || !other.payload || !other.payload.value) return label
+
+							return `${label} (${formatNumber(other.payload.value)})`
+						}}
+					/>
+				</PieChart>
+			</ResponsiveContainer>
 		)
 	}
 }
