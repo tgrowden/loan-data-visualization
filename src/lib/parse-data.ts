@@ -10,5 +10,6 @@ export interface IRawData {
 	installment: string,
 	int_rate: string,
 	term: string,
-	issue_d: string
+	issue_d: string,
+	purpose: string
 }
