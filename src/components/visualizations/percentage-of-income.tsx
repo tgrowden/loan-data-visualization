@@ -57,8 +57,6 @@ export default class PercentageOfIncome extends React.Component<IProps> {
 							 * @TODO: submit PR to `@types/recharts` to fix
 							 */
 							const other = obj as any
-							/* tslint:disable */
-							console.log(other)
 							if (!other || !other.payload || !other.payload.value) return label
 
 							return `${label} (${formatNumber(other.payload.value)})`
