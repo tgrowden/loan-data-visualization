@@ -1,41 +1,41 @@
 import * as React from 'react'
-import 'normalize.css'
-import parseData from './lib/parse-data'
-import LoanData from './lib/loan-data'
-import PercentageOfIncome from './components/visualizations/percentage-of-income'
+import CssBaseline from '@material-ui/core/CssBaseline'
+import { withStyles, Theme } from '@material-ui/core/styles'
+import AppBar from './components/app-bar'
+import Visualizations from './components/visualizations'
 
-interface IState {
-	loanData: LoanData[]
+interface IProps {
+	classes: {
+		[key: string]: any
+	}
 }
 
-class App extends React.Component {
-	public state: IState  = {
-		loanData: []
+const styles = (theme: Theme) => ({
+	'@global': {
+		body: {
+			fontFamily: theme.typography.fontFamily
+		}
+	},
+	appFrame: {
+		padding: theme.spacing.unit * 3
 	}
+})
 
-	public componentWillMount() {
-		// Fetch the data so we can make use of caching
-		fetch('/data.json')
-			.then(res => res.json())
-			.then(data => data.filter((datum: any) => {
-				return datum.loan_amnt !== undefined && datum.annual_inc !== undefined
-			}))
-			.then(json => parseData(json))
-			.then(loanData => {
-				this.setState({ loanData })
-			})
-	}
-
+class App extends React.Component<IProps> {
 	public render() {
+		const { classes } = this.props
+
 		return (
 			<div className="App">
-				<h3 style={{ textAlign: 'center' }}>Loan percentage of income for loans between 2007-2011</h3>
-				<div>
-				<PercentageOfIncome loanData={this.state.loanData} />
+				<CssBaseline />
+				<AppBar />
+				<div className={classes.appFrame}>
+					<Visualizations />
 				</div>
+
 			</div>
 		)
 	}
 }
 
-export default App
+export default withStyles(styles)(App)

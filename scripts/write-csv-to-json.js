@@ -17,7 +17,8 @@ csv()
 			installment: datum.installment,
 			int_rate: datum.int_rate,
 			term: datum.term,
-			issue_d: datum.issue_d
+			issue_d: datum.issue_d,
+			purpose: datum.purpose
 		}))
 	})
 	.then(data => {

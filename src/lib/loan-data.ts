@@ -70,4 +70,8 @@ export default class LoanData {
 	public get loanPercentageOfIncome() {
 		return parseInt((this.loanAmount / this.income * 100).toFixed(0), 10)
 	}
+
+	public get purpose() {
+		return this.data.purpose
+	}
 }
