@@ -3,9 +3,10 @@ import { withStyles, Theme } from '@material-ui/core/styles'
 import Select from '@material-ui/core/Select'
 import MenuItem from '@material-ui/core/MenuItem'
 import LoanData from '../../lib/loan-data'
-import parseData, { IRawData } from '../../lib/parse-data'
+import parseData from '../../lib/parse-data'
 import PercentageOfIncome from './percentage-of-income'
 import LoanPurpose from './loan-purpose'
+import Heatmap from './heatmap'
 
 interface IVisualizationOption {
 	component: React.ComponentType | any,
@@ -20,6 +21,10 @@ const visualizations: { [key: string]: IVisualizationOption } = {
 	percentageOfIncome: {
 		component: PercentageOfIncome,
 		label: 'Loan Percentage of Income'
+	},
+	heatmap: {
+		component: Heatmap,
+		label: 'Heat Map'
 	}
 }
 
@@ -31,7 +36,8 @@ interface IProps {
 
 interface IState {
 	loanData: LoanData[],
-	selectedVisualization: string
+	selectedVisualization: string,
+	heatmapData: any[]
 }
 
 const styles = (theme: Theme) => ({
@@ -43,17 +49,17 @@ const styles = (theme: Theme) => ({
 class Visualizations extends React.Component<IProps, IState> {
 	public state: IState  = {
 		loanData: [],
-		selectedVisualization: Object.keys(visualizations)[0]
+		selectedVisualization: Object.keys(visualizations)[0],
+		heatmapData: []
 	}
 
 	public componentWillMount() {
 		// Fetch the data so we can make use of caching
 		fetch('/data.json')
 			.then(res => res.json())
-			.then(data => this.normalizeData(data))
 			.then(json => parseData(json))
-			.then(loanData => {
-				this.setState({ loanData })
+			.then(state => {
+				this.setState(state)
 			})
 	}
 
@@ -89,20 +95,16 @@ class Visualizations extends React.Component<IProps, IState> {
 	}
 
 	private get selectedVisualization() {
-		const { loanData, selectedVisualization } = this.state
+		const { loanData, selectedVisualization, heatmapData } = this.state
 		if (!loanData.length) return null
 
 		const Component = visualizations[selectedVisualization].component
 
-		return <Component loanData={loanData} />
-	}
+		if (Component === Heatmap) {
+			return <Component data={heatmapData} />
+		}
 
-	private normalizeData(data: IRawData[]) {
-		return data
-			.filter((datum: IRawData) => {
-				return datum.loan_amnt !== undefined &&
-					datum.annual_inc !== undefined
-			})
+		return <Component loanData={loanData} />
 	}
 }
 

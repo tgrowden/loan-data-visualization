@@ -1,9 +1,9 @@
-import { IRawData } from './parse-data'
+import { IRawLoanData } from './parse-data'
 
 export default class LoanData {
-	private data: IRawData
+	private data: IRawLoanData
 
-	constructor(data: IRawData) {
+	constructor(data: IRawLoanData) {
 		this.data = data
 	}
 
